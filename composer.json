@@ -1,0 +1,36 @@
+{
+    "name": "henriquex25/laravel-auditor",
+    "description": "A simple package to audit your Laravel application",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Henriquex25\\LaravelAuditor\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Henrique Miranda",
+            "email": "sergioh003@gmail.com",
+            "homepage": "https://github.com/Henriquex25",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/database": "^10.5|^11",
+        "illuminate/support": "^10.5|^11",
+        "illuminate/queue": "^10.5|^11"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Henriquex25\\LaravelAuditor\\ServiceProvider"
+            ]
+        }
+    }
+}
