@@ -13,9 +13,7 @@ class ServiceProvider extends IlluminateServiceProvider
 
     public function boot(): void
     {
-        $this->publishes([
-            __DIR__.'/../config/audit.php' => config_path('audit.php'),
-        ]);
+        $this->mergeConfigFrom(__DIR__.'/../config/audit.php', 'audit');
 
         $this->publishesMigrations([
             __DIR__.'/../database/migrations' => database_path('migrations'),

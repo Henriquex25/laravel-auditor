@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Henriquex25\LaravelAuditor;
 
+use Chelout\RelationshipEvents\Concerns\HasMorphToManyEvents;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Henriquex25\LaravelAuditor\Model\Audit;
@@ -14,6 +15,8 @@ use Henriquex25\LaravelAuditor\Observers\AuditableObserver;
 
 trait Auditable
 {
+    use HasMorphToManyEvents;
+
     public static function bootAuditable()
     {
         if (static::isAuditingEnabled()) {
