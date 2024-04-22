@@ -22,7 +22,7 @@ class SaveAuditJob implements ShouldQueue
     public function __construct(
         protected array $data,
     ) {
-        $this->connection = 'central';
+        //
     }
 
     public function handle()

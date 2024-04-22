@@ -15,10 +15,10 @@ return new class extends Migration {
         Schema::create('audits', function (Blueprint $table) {
             $table->id();
             $table->string('action');
-            $table->foreignId('user_id')->nullable()->constrained();
-            $table->dateTime('when');
-            $table->ipAddress('ip')->nullable();
             $table->morphs('auditable');
+            $table->nullableMorphs('causer', 'causer');
+            $table->dateTime('when');
+            $table->ipAddress('ip_address')->nullable();
             $table->json('details');
         });
     }

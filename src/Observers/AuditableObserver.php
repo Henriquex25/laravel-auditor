@@ -13,7 +13,6 @@ class AuditableObserver
     public function created(Model $model)
     {
         $data = $model->toArray();
-        unset($data['created_at'], $data['updated_at'], $data['deleted_at']);
 
         Auditor::run([
             'action'         => AuditAction::CREATED,
