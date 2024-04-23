@@ -61,6 +61,7 @@ class AuditManager
         $data['when']                      = Carbon::now();
         $data['ip_address']                = Request::ip();
         $data['details']['auditable_type'] = get_class($this->model);
+        $data['details']['auditable_id']   = $this->model->getKey();
 
         return $data;
     }

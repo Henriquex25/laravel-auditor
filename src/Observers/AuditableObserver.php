@@ -44,7 +44,7 @@ class AuditableObserver
     public function deleted(Model $model): void
     {
         $details = in_array(SoftDeletes::class, class_uses($model))
-            ? ['auditable_id' => $model->getKey()]
+            ? []
             : $model->toArray();
 
         $data = [
@@ -59,7 +59,7 @@ class AuditableObserver
     {
         $data = [
             'action'  => AuditActionEnum::RESTORED,
-            'details' => ['auditable_id' => $model->getKey()]
+            'details' => []
         ];
 
         Auditor::run($model, $data);
