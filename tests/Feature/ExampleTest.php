@@ -1,5 +1,5 @@
 <?php
 
 test('example', function () {
-    expect(true)->toBeTrue();
+    $this->get('/')->assertUnauthorized();
 });
