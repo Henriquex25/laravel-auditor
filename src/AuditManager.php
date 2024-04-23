@@ -21,7 +21,9 @@ class AuditManager
      */
     public function run(array $data): self
     {
-        if ($loggedUser = Auth::user()) {
+        $loggedUser = Auth::user();
+
+        if ($loggedUser && (empty($data['causer_type']) || empty($data['causer_id']))) {
             $data['causer_type'] = get_class($loggedUser);
             $data['causer_id']   = $loggedUser->getKey();
         }

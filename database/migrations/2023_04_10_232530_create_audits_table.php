@@ -15,7 +15,6 @@ return new class extends Migration {
         Schema::create('audits', function (Blueprint $table) {
             $table->id();
             $table->string('action');
-            $table->morphs('auditable');
             $table->nullableMorphs('causer', 'causer');
             $table->dateTime('when');
             $table->ipAddress('ip_address')->nullable();

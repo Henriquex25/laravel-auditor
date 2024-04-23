@@ -16,8 +16,6 @@ class Audit extends Model
         'action',
         'when',
         'ip_address',
-        'auditable_id',
-        'auditable_type',
         'causer_id',
         'causer_type',
         'details',
@@ -29,13 +27,18 @@ class Audit extends Model
         'actions' => AuditActionEnum::class
     ];
 
-    public function auditable(): MorphTo
+    public function causer(): MorphTo
     {
         return $this->morphTo();
     }
 
-    public function causer(): MorphTo
+    public function getNewValues(): ?array
     {
-        return $this->morphTo();
+        return $this->details['new_values'] ?? null;
+    }
+
+    public function getOldValues(): array
+    {
+        return $this->details['old_values'] ?? null;
     }
 }
