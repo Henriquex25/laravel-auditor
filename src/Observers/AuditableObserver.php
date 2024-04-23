@@ -5,16 +5,10 @@ namespace Henriquex25\LaravelAuditor\Observers;
 use Henriquex25\LaravelAuditor\Enums\AuditActionEnum;
 use Henriquex25\LaravelAuditor\Facades\Auditor;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Config;
 
 class AuditableObserver
 {
-    public $afterCommit;
-
-    public function __construct()
-    {
-        $this->afterCommit = Config::get('audit.after_commit', true);
-    }
+    public $afterCommit = true;
 
     public function created(Model $model): void
     {

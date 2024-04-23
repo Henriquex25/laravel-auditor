@@ -10,6 +10,4 @@ return [
     'connection' => 'default',
 
     'queue' => 'default',
-
-    'after_commit' => true,
 ];
