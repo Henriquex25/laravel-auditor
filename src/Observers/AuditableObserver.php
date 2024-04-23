@@ -14,7 +14,7 @@ class AuditableObserver
     public function created(Model $model): void
     {
         $data = [
-            'actions' => AuditActionEnum::CREATED,
+            'action'  => AuditActionEnum::CREATED,
             'details' => $model->toArray()
         ];
 
@@ -31,7 +31,7 @@ class AuditableObserver
         }
 
         $data = [
-            'actions' => AuditActionEnum::UPDATED,
+            'action'  => AuditActionEnum::UPDATED,
             'details' => [
                 'old_values' => $old_values,
                 'new_values' => $new_values,
@@ -48,7 +48,7 @@ class AuditableObserver
             : $model->toArray();
 
         $data = [
-            'actions' => AuditActionEnum::DELETED,
+            'action'  => AuditActionEnum::DELETED,
             'details' => $details
         ];
 
@@ -58,7 +58,7 @@ class AuditableObserver
     public function restored(Model $model): void
     {
         $data = [
-            'actions' => AuditActionEnum::RESTORED,
+            'action'  => AuditActionEnum::RESTORED,
             'details' => ['auditable_id' => $model->getKey()]
         ];
 
@@ -68,7 +68,7 @@ class AuditableObserver
     public function forceDeleted(Model $model): void
     {
         $data = [
-            'actions' => AuditActionEnum::FORCE_DELETED,
+            'action'  => AuditActionEnum::FORCE_DELETED,
             'details' => $model->toArray()
         ];
 
@@ -78,7 +78,7 @@ class AuditableObserver
     public function morphToManyAttached(Model $model, $relation, $parent, $ids, $attributes): void
     {
         $data = [
-            'actions' => AuditActionEnum::ATTACHED,
+            'action'  => AuditActionEnum::ATTACHED,
             'details' => [
                 'parent'     => $parent,
                 'relation'   => $relation,
@@ -93,7 +93,7 @@ class AuditableObserver
     public function morphToManyDetached(Model $model, $relation, $parent, $ids, $attributes): void
     {
         $data = [
-            'actions' => AuditActionEnum::DETACHED,
+            'action'  => AuditActionEnum::DETACHED,
             'details' => [
                 'parent'     => $parent,
                 'relation'   => $relation,
