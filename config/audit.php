@@ -10,4 +10,6 @@ return [
     'connection' => 'default',
 
     'queue' => 'default',
+
+    'save_audit_job' => Henriquex25\LaravelAuditor\Jobs\SaveAuditJob::class,
 ];
