@@ -15,7 +15,7 @@ class AuditableObserver
         $data = $this->getData(
             model: $model,
             action: AuditActionEnum::CREATED,
-            details: []
+            details: $model->toArray()
         );
 
         Auditor::run($model, $data);
