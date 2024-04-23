@@ -6,7 +6,7 @@ namespace Henriquex25\LaravelAuditor\Enums;
 
 use App\Enums\EnumResourcesTrait;
 
-enum AuditAction: string
+enum AuditActionEnum: string
 {
     case CREATED       = 'created';
     case UPDATED       = 'updated';

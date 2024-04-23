@@ -5,13 +5,13 @@ declare(strict_types = 1);
 namespace Henriquex25\LaravelAuditor;
 
 use Chelout\RelationshipEvents\Concerns\HasMorphToManyEvents;
+use Henriquex25\LaravelAuditor\Enums\AuditActionEnum;
+use Henriquex25\LaravelAuditor\Facades\Auditor;
+use Henriquex25\LaravelAuditor\Model\Audit;
+use Henriquex25\LaravelAuditor\Observers\AuditableObserver;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
-use Henriquex25\LaravelAuditor\Model\Audit;
-use Henriquex25\LaravelAuditor\Facades\Auditor;
-use Henriquex25\LaravelAuditor\Enums\AuditAction;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Henriquex25\LaravelAuditor\Observers\AuditableObserver;
 
 trait Auditable
 {
@@ -24,7 +24,7 @@ trait Auditable
 
             static::morphToManyAttached(function ($relation, $parent, $attributes) {
                 Auditor::run([
-                    'action'         => AuditAction::ATTACHED,
+                    'action'         => AuditActionEnum::ATTACHED,
                     'auditable_id'   => $parent->id,
                     'auditable_type' => get_class($parent),
                     'details'        => [
@@ -36,7 +36,7 @@ trait Auditable
 
             static::morphToManyDetached(function ($relation, $parent, $attributes) {
                 Auditor::run([
-                    'action'         => AuditAction::DETACHED,
+                    'action'         => AuditActionEnum::DETACHED,
                     'auditable_id'   => $parent->id,
                     'auditable_type' => get_class($parent),
                     'details'        => [

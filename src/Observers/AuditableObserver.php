@@ -2,9 +2,9 @@
 
 namespace Henriquex25\LaravelAuditor\Observers;
 
-use Illuminate\Database\Eloquent\Model;
+use Henriquex25\LaravelAuditor\Enums\AuditActionEnum;
 use Henriquex25\LaravelAuditor\Facades\Auditor;
-use Henriquex25\LaravelAuditor\Enums\AuditAction;
+use Illuminate\Database\Eloquent\Model;
 
 class AuditableObserver
 {
@@ -15,7 +15,7 @@ class AuditableObserver
         $data = $model->toArray();
 
         Auditor::run([
-            'action'         => AuditAction::CREATED,
+            'action'         => AuditActionEnum::CREATED,
             'auditable_id'   => $model->id,
             'auditable_type' => get_class($model),
             'details'        => $data
@@ -33,7 +33,7 @@ class AuditableObserver
         }
 
         Auditor::run([
-            'action'         => AuditAction::UPDATED,
+            'action'         => AuditActionEnum::UPDATED,
             'auditable_id'   => $model->id,
             'auditable_type' => get_class($model),
             'details'        => [
@@ -46,7 +46,7 @@ class AuditableObserver
     public function deleted(Model $model)
     {
         Auditor::run([
-            'action'         => AuditAction::DELETED,
+            'action'         => AuditActionEnum::DELETED,
             'auditable_id'   => $model->id,
             'auditable_type' => get_class($model),
             'details'        => $model->toArray(),
@@ -56,7 +56,7 @@ class AuditableObserver
     public function restored(Model $model)
     {
         Auditor::run([
-            'action'         => AuditAction::DELETED,
+            'action'         => AuditActionEnum::RESTORED,
             'auditable_id'   => $model->id,
             'auditable_type' => get_class($model),
             'details'        => [],
@@ -66,7 +66,7 @@ class AuditableObserver
     public function forceDeleted(Model $model)
     {
         Auditor::run([
-            'action'         => AuditAction::DELETED,
+            'action'         => AuditActionEnum::FORCE_DELETED,
             'auditable_id'   => $model->id,
             'auditable_type' => get_class($model),
             'details'        => $model->toArray(),

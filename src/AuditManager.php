@@ -4,12 +4,12 @@ declare(strict_types = 1);
 
 namespace Henriquex25\LaravelAuditor;
 
+use Henriquex25\LaravelAuditor\Jobs\SaveAuditJob;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
-use Henriquex25\LaravelAuditor\Jobs\SaveAuditJob;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Request;
 
 class AuditManager
 {
@@ -21,13 +21,17 @@ class AuditManager
      */
     public function run(array $data): self
     {
-        $data['user_id'] = Auth::id();
-        $data['when']    = Carbon::now();
-        $data['ip']      = Request::ip();
+        if ($loggedUser = Auth::user()) {
+            $data['causer_type'] = get_class($loggedUser);
+            $data['causer_id']   = $loggedUser->getKey();
+        }
+
+        $data['when']       = Carbon::now();
+        $data['ip_address'] = Request::ip();
 
         if ($this->shouldQueue()) {
             $connection = $this->getConnection();
-            $queue = $this->getQueue();
+            $queue      = $this->getQueue();
 
             $job = (new SaveAuditJob($data))
                 ->onConnection($connection)
