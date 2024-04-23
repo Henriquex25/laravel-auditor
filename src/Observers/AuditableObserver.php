@@ -5,6 +5,7 @@ namespace Henriquex25\LaravelAuditor\Observers;
 use Henriquex25\LaravelAuditor\Enums\AuditActionEnum;
 use Henriquex25\LaravelAuditor\Facades\Auditor;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AuditableObserver
 {
@@ -12,11 +13,10 @@ class AuditableObserver
 
     public function created(Model $model): void
     {
-        $data = $this->getData(
-            model: $model,
-            action: AuditActionEnum::CREATED,
-            details: $model->toArray()
-        );
+        $data = [
+            'actions' => AuditActionEnum::CREATED,
+            'details' => $model->toArray()
+        ];
 
         Auditor::run($model, $data);
     }
@@ -30,88 +30,78 @@ class AuditableObserver
             $old_values[$dirtyKey] = $model->getOriginal($dirtyKey);
         }
 
-        $data = $this->getData(
-            model: $model,
-            action: AuditActionEnum::UPDATED,
-            details: [
+        $data = [
+            'actions' => AuditActionEnum::UPDATED,
+            'details' => [
                 'old_values' => $old_values,
                 'new_values' => $new_values,
             ]
-        );
+        ];
 
         Auditor::run($model, $data);
     }
 
     public function deleted(Model $model): void
     {
-        $details = $model->isForceDeleting() ? $model->toArray() : [];
+        $details = in_array(SoftDeletes::class, class_uses($model))
+            ? ['auditable_id' => $model->getKey()]
+            : $model->toArray();
 
-        $data = $this->getData(
-            model: $model,
-            action: AuditActionEnum::DELETED,
-            details: $details
-        );
+        $data = [
+            'actions' => AuditActionEnum::DELETED,
+            'details' => $details
+        ];
 
         Auditor::run($model, $data);
     }
 
     public function restored(Model $model): void
     {
-        $data = $this->getData(
-            model: $model,
-            action: AuditActionEnum::RESTORED,
-            details: []
-        );
+        $data = [
+            'actions' => AuditActionEnum::RESTORED,
+            'details' => ['auditable_id' => $model->getKey()]
+        ];
 
         Auditor::run($model, $data);
     }
 
     public function forceDeleted(Model $model): void
     {
-        $data = $this->getData(
-            model: $model,
-            action: AuditActionEnum::FORCE_DELETED,
-            details: $model->toArray()
-        );
-
-        Auditor::run($model, $data);
-    }
-
-    public function morphToManyAttached(Model $model, $relation, $parent, $attributes): void
-    {
-        $data = $this->getData(
-            model: $model,
-            action: AuditActionEnum::ATTACHED,
-            details: [
-                'relation'   => $relation,
-                'attributes' => $attributes
-            ]
-        );
-
-        Auditor::run($model, $data);
-    }
-
-    public function morphToManyDetached(Model $model, $relation, $parent, $attributes): void
-    {
-        $data = $this->getData(
-            model: $model,
-            action: AuditActionEnum::DETACHED,
-            details: [
-                'relation'   => $relation,
-                'attributes' => $attributes
-            ]
-        );
-
-        Auditor::run($model, $data);
-    }
-
-    protected function getData(Model $model, AuditActionEnum $action, array $details): array
-    {
-        return [
-            'action'      => $action,
-            'causer_id'   => $model->getKey(),
-            'causer_type' => get_class($model),
-            'details'     => $details
+        $data = [
+            'actions' => AuditActionEnum::FORCE_DELETED,
+            'details' => $model->toArray()
         ];
+
+        Auditor::run($model, $data);
+    }
+
+    public function morphToManyAttached(Model $model, $relation, $parent, $ids, $attributes): void
+    {
+        $data = [
+            'actions' => AuditActionEnum::ATTACHED,
+            'details' => [
+                'parent'     => $parent,
+                'relation'   => $relation,
+                'ids'        => $ids,
+                'attributes' => $attributes,
+            ]
+        ];
+
+        Auditor::run($model, $data);
+    }
+
+    public function morphToManyDetached(Model $model, $relation, $parent, $ids, $attributes): void
+    {
+        $data = [
+            'actions' => AuditActionEnum::DETACHED,
+            'details' => [
+                'parent'     => $parent,
+                'relation'   => $relation,
+                'ids'        => $ids,
+                'attributes' => $attributes,
+            ]
+        ];
+
+        Auditor::run($model, $data);
     }
 }

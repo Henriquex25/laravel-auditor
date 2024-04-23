@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Request;
 
 class AuditManager
 {
+    protected Model $model;
+
     protected function shouldQueue(): bool
     {
         return Config::get('audit.should_queue');
@@ -40,29 +42,35 @@ class AuditManager
         return (new $saveAuditJob($data, ...$args));
     }
 
-    protected function getArgs(Model $model): array
+    protected function getArgs(): array
     {
-        if (method_exists($model, 'extraSaveAuditJobArgs')) {
-            return $model->getArgs();
+        if (method_exists($this->model, 'extraSaveAuditJobArgs')) {
+            return $this->model->getArgs();
         }
 
         return [];
     }
 
-    public function run(Model $model, array $data): void
+    protected function resolveData(array $data): array
     {
-        $loggedUser = Auth::user();
-
-        if ($loggedUser && (empty($data['causer_type']) || empty($data['causer_id']))) {
+        if ($loggedUser = Auth::user()) {
             $data['causer_type'] = get_class($loggedUser);
             $data['causer_id']   = $loggedUser->getKey();
         }
 
-        $data['when']       = Carbon::now();
-        $data['ip_address'] = Request::ip();
+        $data['when']                      = Carbon::now();
+        $data['ip_address']                = Request::ip();
+        $data['details']['auditable_type'] = get_class($this->model);
 
-        $args = $this->getArgs($model);
-        $job  = $this->getSaveAuditJob($data, $args);
+        return $data;
+    }
+
+    public function run(Model $model, array $data): void
+    {
+        $this->model  = $model;
+        $resolvedData = $this->resolveData($data);
+        $args         = $this->getArgs();
+        $job          = $this->getSaveAuditJob($resolvedData, $args);
 
         if ($this->shouldQueue()) {
             $connection = $this->getConnection();
